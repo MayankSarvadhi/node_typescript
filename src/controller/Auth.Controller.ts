@@ -12,9 +12,10 @@ class AuthController extends ApplicationController {
     }
 
     async login(req, res, next) {
-        const { body: { email } } = req;
+        const { body: { email, password } } = req;
         const result = await db.UsersSchema.findOne({ where: { email } });
-        if (result) {
+
+        if (result && result.authenticate(password)) {
             const payload = {
                 id: result.id,
                 email: result.email
@@ -43,7 +44,7 @@ class AuthController extends ApplicationController {
 
     async logout(req, res, next) {
         const { user: { id } } = req;
-        
+
         await db.AuthSchema.destroy({ where: { userID: id } });
         return res.status(200).json({
             success: true,

@@ -11,6 +11,8 @@ export interface UserModel extends Model {
     email: string;
     rool: "seller" | "buyer";
     password: string;
+    validateAsync(): Promise<void>;
+    authenticate(password: string | Buffer);
 }
 
 export const UsersSchema = sequelize.define<UserModel>('userInformation', {
@@ -59,13 +61,14 @@ UsersSchema.prototype.validateAsync = async (user: UserModel) => {
     try {
         const userJSON = user.toJSON();
         const value = await userSchema.validateAsync(userJSON);
+        return value;
     } catch (error) {
         throw new AppError(`Validation Error - ${error.details[0].message}`, 'invalid_request');
     }
 }
-UsersSchema.prototype.authenticate = function (value, user) {
+UsersSchema.prototype.authenticate = function (value: string | Buffer) {
     if (bcrypt.compareSync(value, this.password)) {
-        return user.password
+        return this;
     } else {
         return false;
     }

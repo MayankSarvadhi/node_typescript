@@ -12,4 +12,4 @@ export let db = {
     ProductSchema
 }
 
-// db.sequelize.sync({force : true});
+// db.sequelize.sync({force : false});

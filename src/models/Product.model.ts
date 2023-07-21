@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-// make interface
+
 interface ProductAttributes extends Model {
   id: string;
   productName: string;
